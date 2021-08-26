@@ -18,7 +18,7 @@
 * [文件配置操作](tutorial/config-operation/README.md)
   * [訊息文件配置](tutorial/config-operation/message-config.md)
   * [文件池配置](tutorial/config-operation/configuration-pool.md)
-  * [多語言文件\[NEW\]](tutorial/config-operation/i18n.md)
+  * [多語言文件](tutorial/config-operation/i18n.md)
 
 ## 其他參考 <a id="references"></a>
 
