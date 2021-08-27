@@ -98,6 +98,10 @@ public class ELDTester extends ELDBukkitPlugin {
 
 使用可以透過 `GroupConfig<T>` 進行注入，但在標註上並非使用 `@Inject`，而是使用 `@InjectPool` 。
 
+{% hint style="danger" %}
+請勿使用 `@Inject` 注入 `GroupConfig<T>`， 否則會報錯。
+{% endhint %}
+
 從上述範例當中，我們註冊了 `Book` 作為 文件池組別，使用則如下範例:
 
 ```java
