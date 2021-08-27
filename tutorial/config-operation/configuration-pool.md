@@ -207,7 +207,7 @@ public interface GroupConfig<T extends GroupConfiguration> {
 
 v0.1.3 之後，文件池將允許刪除，創建及更新指定文件。
 
-`GroupConfig<T>` 在獲取指定文件之後，將會把其儲存到快取，直到被刪除和更新。若要手動清除快取，可以調用 `fetch` 或者 `fetchById` 來清除指定文件。
+`GroupConfig<T>` 在獲取指定文件之後，將會把其儲存到快取，直到被刪除和更新。若要手動清除快取，可以調用 `fetch` 或者調用 `fetchById` 來清除指定文件。
 
 ```java
 @Commander(
