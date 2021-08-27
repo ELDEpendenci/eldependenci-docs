@@ -203,5 +203,100 @@ public interface GroupConfig<T extends GroupConfiguration> {
 有時候你可能需要手動去獲取特定類型的 `GroupConfig<T>`，這時候你應該使用[文件池服務](../../references/internal-api-services/config-pool-service.md)。
 {% endhint %}
 
+### 文件池的讀寫操作\[NEW\]
 
+v0.1.3 之後，文件池將允許刪除，創建及更新指定文件。
+
+`GroupConfig<T>` 在獲取指定文件之後，將會把其儲存到快取，直到被刪除和更新。若要手動清除快取，可以調用 `fetch` 或者 `fetchById` 來清除指定文件。
+
+```java
+@Commander(
+        name = "reload",
+        description = "book reload"
+)
+public class TestBookReloadCommand implements CommandNode {
+
+    @InjectPool
+    private GroupConfig<Book> groupConfig;
+
+    @Override
+    public void execute(CommandSender commandSender) {
+        groupConfig.fetch(); // 清除快取後，下次獲取將直接從文件加載
+        commandSender.sendMessage("reloaded");
+    }
+}
+```
+
+除此之外，你也可以透過 文件池 創建文件。範例如下:
+
+```java
+@Commander(
+        name = "add",
+        description = "add book"
+)
+public class TestBookAddCommand implements CommandNode {
+
+
+    @InjectPool
+    private GroupConfig<Book> groupConfig;
+
+    @Inject
+    private ScheduleService scheduleService; // 如需使用異步，請自行實現
+
+    @Inject
+    private ELDTester plugin;
+
+    @CommandArg(order = 1)
+    private String id;
+
+    @CommandArg(order = 1, optional = true)
+    private String author = "unknown";
+
+    @Override
+    public void execute(CommandSender sender) {
+        Book book = new Book();
+        book.setId(id); // 記得設置標識 id, 否則會報錯
+        book.title = "This is a title with id "+id;
+        book.author = author;
+        book.description = "book with id "+id;
+        book.contents = Arrays.asList("this", "is", "a", "content");
+
+        scheduleService
+                .runAsync(plugin, () -> groupConfig.save(book))
+                .thenRunSync(v -> sender.sendMessage("save completed")).join();
+    }
+}
+```
+
+刪除指定文件的範例則如下:
+
+```java
+@Commander(
+        name = "delete",
+        description = "delete book"
+)
+public class TestBookDeleteCommand  implements CommandNode {
+
+    @Inject
+    private ScheduleService scheduleService;
+
+    @Inject
+    private ELDTester plugin;
+
+    @InjectPool
+    private GroupConfig<Book> groupConfig;
+
+
+    @CommandArg(order = 1)
+    private String id;
+
+    @Override
+    public void execute(CommandSender sender) {
+        scheduleService
+                .callAsync(plugin, () -> groupConfig.deleteById(id))
+                .thenRunSync(result -> sender.sendMessage("delete "+(result ? "success" : "failed"))).join();
+    }
+}
+
+```
 
