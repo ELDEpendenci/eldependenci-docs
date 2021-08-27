@@ -1,7 +1,3 @@
----
-description: 此為 v0.0.7 後的功能。
----
-
 # 文件池配置
 
 文件池，又名文件組，指一個特定的文件夾內的所有yaml。  
@@ -14,7 +10,7 @@ description: 此為 v0.0.7 後的功能。
 
 ```java
 @GroupResource(folder = "Books")
-public class BookConfig extends GroupConfiguration {
+public class Book extends GroupConfiguration {
 
     public String title;
     public String author;
@@ -32,7 +28,7 @@ public class BookConfig extends GroupConfiguration {
      folder = "Books",
      preloads = { "internal" } // 假設你 jar 內有 /Books/internal.yml 的文件
 )
-public class BookConfig extends GroupConfiguration {
+public class Book extends GroupConfiguration {
 
     public String title;
     public String author;
@@ -85,7 +81,7 @@ public class ELDTester extends ELDBukkitPlugin {
 
     @Override
     protected void bindServices(ServiceCollection serviceCollection) {
-        serviceCollection.addGroupConfiguration(BookConfig.class); //註冊
+        serviceCollection.addGroupConfiguration(Book.class); //註冊
     }
 
     @Override
@@ -98,7 +94,108 @@ public class ELDTester extends ELDBukkitPlugin {
 
 然後，便可以開始使用。
 
-{% hint style="info" %}
-有關文件池使用範例請參考[這裏](../../references/internal-api-services/config-pool-service.md)。
+### 使用
+
+使用可以透過 `GroupConfig<T>` 進行注入，但在標註上並非使用 `@Inject`，而是使用 `@InjectPool` 。
+
+從上述範例當中，我們註冊了 `Book` 作為 文件池組別，使用則如下範例:
+
+```java
+@Commander(
+        name = "check",
+        description = "book chceck command"
+)
+public class TestBookCheckCommand implements CommandNode {
+
+    @InjectPool // 使用 @InjectPool 而不是 @Inject
+    private GroupConfig<Book> bookGroupConfig; // 注入
+
+    @CommandArg(order = 0)
+    private String book;
+
+    @Override
+    public void execute(CommandSender commandSender) {
+        Optional<Book> gp = bookGroupConfig.findById(book);
+        if (gp.isEmpty()){
+            commandSender.sendMessage("book "+book+" is not exist.");
+            return;
+        }
+        var bookContent = gp.get();
+        commandSender.sendMessage("id: "+bookContent.getId());
+        commandSender.sendMessage("書名: "+ bookContent.title);
+        commandSender.sendMessage("作者: "+bookContent.author);
+        commandSender.sendMessage("書本簡介: "+bookContent.description);
+        commandSender.sendMessage("書本總頁數: "+bookContent.pages);
+        commandSender.sendMessage("書本內容: ");
+        for (int i = 0; i < bookContent.contents.size(); i++) {
+            commandSender.sendMessage(i+1+": "+bookContent.contents.get(i));
+        }
+    }
+}
+
+```
+
+GroupConfig&lt;T&gt; 採用 DAO layer，其源碼如下:
+
+```java
+public interface GroupConfig<T extends GroupConfiguration> {
+
+    /**
+     *
+     * @return 所有文件實例
+     */
+    List<T> findAll();
+
+    /**
+     * 根據 id 尋找文件實例
+     * @param id 標識 id
+     * @return 文件實例
+     */
+    Optional<T> findById(String id);
+
+    /**
+     * 保存一個文件，標識 id 不能為 null
+     * @param config 文件實例
+     */
+    void save(T config);
+
+    /**
+     * 透過 id 刪除文件
+     * @param id 標識 id
+     * @return 刪除成功
+     */
+    boolean deleteById(String id);
+
+    /**
+     * 獲取文件池總數量
+     * @return 數量
+     */
+    long totalSize();
+
+    /**
+     * 刪除文件
+     * @param config 文件實例，id 不能為 null
+     * @return 刪除成功
+     */
+    boolean delete(T config);
+
+    /**
+     * 清楚所有快取
+     */
+    void fetch();
+
+    /**
+     * 清楚指定文件的快取
+     * @param id 標識 id
+     */
+    void fetchById(String id);
+
+}
+```
+
+{% hint style="warning" %}
+要注意的是，`GroupConfig<T>` 本身的操作並不是異步的，你需要自行實作異步。但它本身亦有快取功能，能大程度上加快二次獲取。
 {% endhint %}
+
+
 
