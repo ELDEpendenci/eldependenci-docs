@@ -135,7 +135,7 @@ public class TestBookCheckCommand implements CommandNode {
 
 ```
 
-GroupConfig&lt;T&gt; 採用 DAO layer，其源碼如下:
+`GroupConfig<T>` 採用 DAO pattern，其源碼如下:
 
 ```java
 public interface GroupConfig<T extends GroupConfiguration> {
@@ -195,6 +195,8 @@ public interface GroupConfig<T extends GroupConfiguration> {
 
 {% hint style="warning" %}
 要注意的是，`GroupConfig<T>` 本身的操作並不是異步的，你需要自行實作異步。但它本身亦有快取功能，能大程度上加快二次獲取。
+
+有時候你可能需要手動去獲取特定類型的 `GroupConfig<T>`，這時候你應該使用[文件池服務](../../references/internal-api-services/config-pool-service.md)。
 {% endhint %}
 
 
