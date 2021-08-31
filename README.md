@@ -4,10 +4,6 @@ description: ELDependenci 是基於依賴注入的 PaperSpigot 插件開發框�
 
 # 歡迎使用 ELDependenci
 
-{% hint style="warning" %}
-如發現 wiki 加載緩慢，可以直接到 [github](https://github.com/eric2788/eldependenci-docs/wiki) 查看 md 文件。
-{% endhint %}
-
 {% hint style="success" %}
 本框架目前正在為伺服器團隊提供開發協助和咨詢，如有興趣，歡迎[聯絡](https://discord.gg/S5HNtQqzXe)。
 {% endhint %}

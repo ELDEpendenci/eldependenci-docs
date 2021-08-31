@@ -305,6 +305,87 @@ public class TestConfig extends Configuration {
 此框架文件配置採用 jackson-databind-yaml 作為基礎，因此你可以使用任何的[ jackson-annotations](https://www.baeldung.com/jackson-annotations) 以控制映射物件。
 {% endhint %}
 
+假若你的文件配置如下，則可使用 Map 裝載。
+
+{% tabs %}
+{% tab title="config.yml" %}
+```yaml
+name: "hello world"
+number: 12
+bool: true
+# 使用 Map 裝載
+boxes:
+  box1:
+    name: "box 1"
+    size: 1
+    color: RED
+  box2:
+    name: "box 2"
+    size: 2
+    color: BLUE
+  box3:
+    name: "box 3"
+    size: 3
+    color: ORANGE
+# 使用 List 裝載
+boxList:
+  - name: "box 1"
+    size: 1
+    color: ORANGE
+  - name: "box 2"
+    size: 2
+    color: ORANGE
+
+```
+{% endtab %}
+
+{% tab title="TestConfig.java" %}
+```java
+@Resource(locate = "config.yml")
+public class TestConfig extends Configuration {
+
+    public String name;
+    public int number;
+    public boolean bool;
+    public Map<String, Box> boxes;
+    public List<Box> boxList;
+
+    public static class Box {
+        public String name;
+        public int size;
+        public ChatColor color;
+
+
+        @Override
+        public String toString() {
+            return "Box{" +
+                    "name='" + name + '\'' +
+                    ", size=" + size +
+                    ", color=" + color +
+                    '}';
+        }
+    }
+
+
+    @Override
+    public String toString() {
+        return "TestConfig{" +
+                "name='" + name + '\'' +
+                ", number=" + number +
+                ", bool=" + bool +
+                ", boxes=" + boxes +
+                ", boxList=" + boxList +
+                '}';
+    }
+}
+```
+{% endtab %}
+{% endtabs %}
+
+{% hint style="success" %}
+你也可以裝載任何繼承了 `ConfigurationSerializable` 的 Bukkit Object 類型，例如 `ItemStack` 或 `Location` 等等。
+{% endhint %}
+
 最後在你的 Main class 中，註冊 映射物件。
 
 ```java
