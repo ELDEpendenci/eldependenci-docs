@@ -411,7 +411,7 @@ public class I18nServiceImpl implements I18nService{
 ```
 
 {% hint style="info" %}
-上面所提供的範例為本框架內的多語言文件功能，詳情可以參閱[這裏](tutorial/config-operation/i18n.md#shi-yong-wei-i18n)。
+上面所提供的範例為本框架內的多語言文件功能，詳情可以參閱[這裏](advanced-tutorial/config-operation/i18n.md#shi-yong-wei-i18n)。
 {% endhint %}
 
 在指令中注入:
