@@ -52,7 +52,7 @@
 * [下載](https://github.com/ELDependenci/ELDependenci/releases)
 * [Javadocs 文件](https://eldependenci.github.io/ELDependenci/)
 
-## 聯絡我們 <a id="lian-lao-wo-men"></a>
+## 聯絡我們 <a id="contact"></a>
 
 * [Discord](https://discord.gg/S5HNtQqzXe)
 
