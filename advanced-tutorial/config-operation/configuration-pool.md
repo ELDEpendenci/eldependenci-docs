@@ -311,6 +311,7 @@ v0.1.4 之後，文件池可以被分頁提取，並提供過濾，頁數，和�
 )
 public class TestBookPageCommand implements CommandNode {
 
+    // 自定義過濾
     private static final Predicate<Path> NO_START_WITH_B = path -> !path.getFileName().toString().startsWith("b");
     private static final Predicate<Path> NO_START_WITH_A = path -> !path.getFileName().toString().startsWith("a");
 
