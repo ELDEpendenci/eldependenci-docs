@@ -203,7 +203,7 @@ public interface GroupConfig<T extends GroupConfiguration> {
 有時候你可能需要手動去獲取特定類型的 `GroupConfig<T>`，這時候你應該使用[文件池服務](../../references/internal-api-services/config-pool-service.md)。
 {% endhint %}
 
-### 文件池的讀寫操作\[NEW\]
+### 文件池的讀寫操作
 
 v0.1.3 之後，文件池將允許刪除，創建及更新指定文件。
 
@@ -298,5 +298,52 @@ public class TestBookDeleteCommand  implements CommandNode {
     }
 }
 
+```
+
+### 文件池分頁操作
+
+v0.1.4 之後，文件池可以被分頁提取，並提供過濾，頁數，和每頁數量等控制，以更好於界面上呈現。
+
+```java
+@Commander(
+        name = "page",
+        description = "pagination test for books"
+)
+public class TestBookPageCommand implements CommandNode {
+
+    private static final Predicate<Path> NO_START_WITH_B = path -> !path.getFileName().toString().startsWith("b");
+    private static final Predicate<Path> NO_START_WITH_A = path -> !path.getFileName().toString().startsWith("a");
+
+    @InjectPool
+    private GroupConfig<Book> groupConfig;
+
+    @Inject
+    private ScheduleService scheduleService;
+
+    @Inject
+    private ELDTester plugin;
+
+    @CommandArg(order = 1)
+    private int page;
+
+    @CommandArg(order = 2, optional = true)
+    private boolean showContent = false;
+
+    @CommandArg(order = 3, optional = true)
+    private int size = 10;
+
+    @Override
+    public void execute(CommandSender commandSender) {
+        int index = Math.max(0, page - 1);
+        groupConfig.fetch(); // 使用 fetch 將會清除所有快取並加慢獲取速度，請謹慎使用
+        scheduleService.callAsync(plugin, () -> groupConfig.findAll(PageRequest.of(index, size, NO_START_WITH_B))) // 異步仍然需要自己實現
+                .thenRunSync(page -> {
+                    commandSender.sendMessage("page size: "+page.getContent().size());
+                    page.getContent().forEach(book -> commandSender.sendMessage(showContent ? book.toString() : book.getId()));
+                    // 透過 Page<T> 實例，你可以獲取到目前頁數，最大頁數，文件池總數量等等的參數
+                    commandSender.sendMessage(MessageFormat.format("page {0} / {1}, Total Elements: {2}", page.getCurrentPage()+1, page.getTotalPages(), page.getTotalElements()));
+                }).join();
+    }
+}
 ```
 
