@@ -9,17 +9,19 @@ description: 本頁將教你如何創建你的第一個使用 ELD framework 框�
 
 * 文件 - 泛指 YAML
 * 參數 - 泛指指令參數
-* 服務 - 泛指 界面接口，可用作 插件對外接口 \(API\)
+* 服務 - 泛指 界面接口，可用作 插件對外接口 (API)
 * 單例 - 保持單一的實例。如果用於實現接口，通常不會用於注入。
 {% endhint %}
 
 若果你使用 Maven, 你可以依照下列的 文本 掛接 ELDependenci 框架。
 
+本框架採用 [github packages](https://github.com/orgs/ELDEpendenci/packages) 作為 maven 庫。你可以在 [這裏 ](https://docs.github.com/cn/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry)進一步了解如何掛接。
+
 ```markup
 <repositories>
     <repository>
-        <id>nexus</id>
-        <url>https://nexus.chu77.xyz/repository/plugins/</url>
+        <id>eld</id>
+        <url>https://maven.pkg.github.com/ELDependenci/eldependenci</url>
     </repository>
 </repositories>
 ```
@@ -95,10 +97,10 @@ public class ELDTester extends ELDBukkitPlugin {
 ```
 
 {% hint style="success" %}
-最後，設置好 plugin.yml, 把 main 指向至 繼承 ELDBukkitPlugin 的 class \(ELDTester.java\) , 你的第一個ELD插件就完成了。
+最後，設置好 plugin.yml, 把 main 指向至 繼承 ELDBukkitPlugin 的 class (ELDTester.java) , 你的第一個ELD插件就完成了。
 {% endhint %}
 
-## 創建指令 <a id="create-command"></a>
+## 創建指令 <a href="#create-command" id="create-command"></a>
 
 以下範例將編寫分支指令。
 
@@ -180,7 +182,7 @@ public class TesterRegistry implements ComponentsRegistry {
 ```
 {% endcode %}
 
-## 事件監聽器 \(ELD 版本\) <a id="event-listener"></a>
+## 事件監聽器 (ELD 版本) <a href="#event-listener" id="event-listener"></a>
 
 在註冊事件監聽器中，你可以直接註冊原版的事件監聽器，也可以註冊 ELD 版本監聽器 ELDListener。
 
@@ -245,7 +247,7 @@ public class TesterRegistry implements ComponentsRegistry {
 }
 ```
 
-## Yaml 文件配置 <a id="yaml"></a>
+## Yaml 文件配置 <a href="#yaml" id="yaml"></a>
 
 此框架採用 ORM 設計進行 Yaml 文件配置。假設你有如下文件配置:
 
@@ -410,9 +412,9 @@ public class ELDTester extends ELDBukkitPlugin {
 註冊後，你可把文件映射物件當作可注入實例使用。
 {% endhint %}
 
-## 注入實例 <a id="inject-instance"></a>
+## 注入實例 <a href="#inject-instance" id="inject-instance"></a>
 
-### 注入文件映射物件 <a id="yaml-inject-instance"></a>
+### 注入文件映射物件 <a href="#yaml-inject-instance" id="yaml-inject-instance"></a>
 
 以分支指令為例。
 
@@ -498,7 +500,7 @@ public class TestListeners implements Listener {
 }
 ```
 
-### 注入自定義單例 \(Singleton\) <a id="inject-singleton"></a>
+### 注入自定義單例 (Singleton) <a href="#inject-singleton" id="inject-singleton"></a>
 
 ```java
 public class TesterSingleton {
@@ -563,7 +565,7 @@ public class TesterLifeCycle implements ELDLifeCycle {
 }
 ```
 
-@Inject 除了使用在 instance field 之外，你也可以使用於 constructor \(建構子/構造器\) 之中。
+@Inject 除了使用在 instance field 之外，你也可以使用於 constructor (建構子/構造器) 之中。
 
 ```java
 public class TestManager {
@@ -587,10 +589,10 @@ public class TestManager {
 你無法使用 @Inject 於 不可注入的實例之中，否則會報錯。
 {% endhint %}
 
-## 注入服務 \(Service\) <a id="inject-service"></a>
+## 注入服務 (Service) <a href="#inject-service" id="inject-service"></a>
 
-服務與單例性質基本相同，但其分別在於服務是使用 interface 作為媒介，而 單例 則使用 實例 。  
-使用 interface 作為媒介的好處在於避免出現[高耦合](https://ithelp.ithome.com.tw/articles/10191761)的問題，通常適用於作為插件對外接口\(API\), 或是出現不同的實作方式時。
+服務與單例性質基本相同，但其分別在於服務是使用 interface 作為媒介，而 單例 則使用 實例 。\
+使用 interface 作為媒介的好處在於避免出現[高耦合](https://ithelp.ithome.com.tw/articles/10191761)的問題，通常適用於作為插件對外接口(API), 或是出現不同的實作方式時。
 
 ```java
 @Commander(
@@ -623,7 +625,7 @@ public class TestSchedulerOneCommand implements CommandNode {
 }
 ```
 
-## 
+##
 
 {% hint style="success" %}
 你可以在任何可進行依賴注入的實例中注入可注入實例。
@@ -631,18 +633,16 @@ public class TestSchedulerOneCommand implements CommandNode {
 可注入實例包括如下
 
 * 文件映射物件
-* 服務 \(Service\)
-* 單例 \(Singleton\)
-* 插件主類 \(Plugin\)
+* 服務 (Service)
+* 單例 (Singleton)
+* 插件主類 (Plugin)
 
 可進行依賴注入的實例包括如下
 
-* 指令 \(繼承 CommandNode 的 class\)
-* 監聽器 \(繼承 Listener 或 ELDListener 的 class\)
-* 已註冊實例 \(使用 ServiceCollection 註冊的單例 \[Singleton\]\)
-* 已註冊服務 \(使用 ServiceCollection 註冊的服務 \[Service\]\)
-* 生命週期 \(繼承 ELDLifeCycle 的 class\)
+* 指令 (繼承 CommandNode 的 class)
+* 監聽器 (繼承 Listener 或 ELDListener 的 class)
+* 已註冊實例 (使用 ServiceCollection 註冊的單例 \[Singleton])
+* 已註冊服務 (使用 ServiceCollection 註冊的服務 \[Service])
+* 生命週期 (繼承 ELDLifeCycle 的 class)
 {% endhint %}
-
-
 
