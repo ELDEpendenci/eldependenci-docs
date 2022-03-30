@@ -15,7 +15,9 @@ description: 本頁將教你如何創建你的第一個使用 ELD framework 框�
 
 若果你使用 Maven, 你可以依照下列的 文本 掛接 ELDependenci 框架。
 
-本框架採用 [github packages](https://github.com/orgs/ELDEpendenci/packages) 作為 maven 庫。你可以在 [這裏 ](https://docs.github.com/cn/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry)進一步了解如何掛接。
+{% hint style="info" %}
+本框架採用 [github packages](https://github.com/orgs/ELDEpendenci/packages) 作為 maven 庫。你可以在 [這裏 ](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry#installing-a-package)進一步了解如何掛接。
+{% endhint %}
 
 ```markup
 <repositories>
