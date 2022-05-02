@@ -4,7 +4,7 @@ description: 計時器的 Service 名稱為 ScheduleService
 
 # 計時器
 
-### 在 BukkitRunnable 使用依賴注入 <a id="inject-bukkitrunnable"></a>
+### 在 BukkitRunnable 使用依賴注入 <a href="#inject-bukkitrunnable" id="inject-bukkitrunnable"></a>
 
 ```java
 @Commander(
@@ -37,9 +37,9 @@ public class TestSchedulerOneCommand implements CommandNode {
 }
 ```
 
-透過使用 injectTask\(BukkitRunnable runnable\) 進行計時器操作，該 BukkitRunnable 將能使用依賴注入以進行其他操作。
+透過使用 injectTask(BukkitRunnable runnable) 進行計時器操作，該 BukkitRunnable 將能使用依賴注入以進行其他操作。
 
-ScheduleService 源碼一覽 \(只顯示了計時器部分\)
+ScheduleService 源碼一覽 (只顯示了計時器部分)
 
 ```java
 public interface ScheduleService {
@@ -57,7 +57,7 @@ public interface ScheduleService {
 }
 ```
 
-### 異步與同步的切換執行與數值呼叫傳遞 <a id="call-async"></a>
+### 異步與同步的切換執行與數值呼叫傳遞 <a href="#call-async" id="call-async"></a>
 
 有時候你需要從異步獲取數值然後放到同步執行。這種操作在java通常使用 CompletableFuture ，然而 CompletableFuture 對 編寫 bukkit 插件並不友好。此功能採用的是完全的 BukkitRunable, 對 編寫 bukkit 插件是完全兼容的。
 
@@ -98,5 +98,78 @@ public class TestSchedulerTwoCommand implements CommandNode {
 
 在上述的範例中，所有的 async 和 sync 都是使用了 BukkitRunnable 執行，在異步使用 `Thread.sleep(long)` 也沒有影響到 Bukkit main thread 的運行。
 
+### 阻塞運行及等待多個異步事件運行完成
 
+在 `v0.1.5` 版本後，新增了類似 `Promise.all` 的等待多個異步事件完成的方式。演示如下:
 
+```java
+@Commander(
+        name = "four",
+        description = "test scheduler four"
+)
+public class TestSchedulerFourCommand implements CommandNode {
+
+    @Inject
+    private ScheduleService scheduleService;
+    @Inject
+    private ELDTester plugin;
+
+    // 是否為有序
+    @CommandArg(order = 1, labels = "<with order>", optional = true)
+    private boolean order = true;
+
+    @Override
+    public void execute(CommandSender commandSender) {
+        // 異步事件 1
+        var one = scheduleService.runAsync(plugin, () -> {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            commandSender.sendMessage("one!");
+        });
+        // 異步事件 2
+        var two = scheduleService.runAsync(plugin, () -> {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            commandSender.sendMessage("two!");
+        });
+        // 異步事件 3
+        var three = scheduleService.runAsync(plugin, () -> {
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            commandSender.sendMessage("three!");
+        });
+
+        if (order){
+            // 有序使用方式
+            commandSender.sendMessage("with order..");
+            scheduleService.runAsync(plugin, () -> {
+                try {
+                    one.block(); // 阻塞運行, 因為在 runAsync 裡面所以可以安全使用。
+                    two.block(); // 阻塞運行
+                    three.block(); // 阻塞運行
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                } finally {
+                    commandSender.sendMessage("done!");
+                }
+
+            }).join();
+        }else{
+            commandSender.sendMessage("without order..");
+            // 無序運行，異步事件將會迸發運行
+            scheduleService.runAllAsync(plugin, List.of(one, two, three)).join();
+        }
+    }
+}
+```
