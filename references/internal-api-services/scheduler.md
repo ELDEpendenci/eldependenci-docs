@@ -98,9 +98,9 @@ public class TestSchedulerTwoCommand implements CommandNode {
 
 在上述的範例中，所有的 async 和 sync 都是使用了 BukkitRunnable 執行，在異步使用 `Thread.sleep(long)` 也沒有影響到 Bukkit main thread 的運行。
 
-### 阻塞運行及等待多個異步事件運行完成 <a href="#blockandrunallasync" id="blockandrunallasync"></a>
+### 阻塞運行及等待多個或單一異步事件運行完成 <a href="#blockandrunallasync" id="blockandrunallasync"></a>
 
-在 `v0.1.5` 版本後，新增了類似 `Promise.all` 的等待多個異步事件完成的方式。演示如下:
+在 `v0.1.5` 版本後，新增了類似 `Promise.all` 或 `Promise.race` 的等待多個或單一異步事件完成的方式。演示如下:
 
 ```java
 @Commander(
@@ -170,6 +170,9 @@ public class TestSchedulerFourCommand implements CommandNode {
             // 無序運行，異步事件將會迸發運行
             scheduleService.runAllAsync(plugin, List.of(one, two, three)).join();
         }
+        
+        // 等待單一事件運行
+        scheduleService.runAnyAsync(plugin, List.of(one, two, three)).join();
     }
 }
 ```
