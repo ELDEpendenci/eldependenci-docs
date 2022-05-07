@@ -23,6 +23,7 @@
 ## 其他參考 <a href="#references" id="references"></a>
 
 * [框架內置 API Services](references/internal-api-services/README.md)
+  * [日誌輸出](references/internal-api-services/ri-zhi-shu-chu.md)
   * [計時器](references/internal-api-services/scheduler.md)
   * [物品編輯](references/internal-api-services/itemstack.md)
   * [訊息編輯](references/internal-api-services/xun-xi-bian-ji.md)
