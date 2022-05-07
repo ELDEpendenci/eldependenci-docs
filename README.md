@@ -48,8 +48,8 @@ description: ELDependenci 是基於依賴注入的 PaperSpigot 插件開發框�
 **在閱讀本文檔之前，請先注意以下事項**
 
 * 本框架以 Guice 作為 DI 的主要依賴庫
-* 本框架以 Paper 1.17.1 插件作為編寫基礎
-* 本框架採用 jdk16 運行
+* 本框架以 Paper 1.18.2 插件作為編寫基礎
+* 本框架採用 jdk18 運行
 {% endhint %}
 
 {% hint style="info" %}
