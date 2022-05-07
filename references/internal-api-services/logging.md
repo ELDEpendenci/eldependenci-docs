@@ -29,7 +29,7 @@ public class TesterLifeCycle implements ELDLifeCycle {
     public void onEnable(JavaPlugin javaPlugin) {
         var logger = loggingService.getLogger(ELDTester.class);
         logger.debug("this {0} is {1}", "logger", "debug logger");
-        logger.debug(new Exception("this is a debug exception"), "this is a debug message");
+        logger.debug(new Exception("this is a debug exception"), "this is a debug excpetion");
         logger.info("this is a info message");
         logger.warn("this is a warn message");
     }
