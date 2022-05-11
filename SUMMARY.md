@@ -30,6 +30,7 @@
   * [文件池服務](references/internal-api-services/config-pool-service.md)
 * [框架內置指令參數解析](references/arg-parser-inside-eld.md)
 * [版本更新](references/version-update/README.md)
+  * [v0.1.7](references/version-update/v0.1.7.md)
   * [v0.1.6](references/version-update/v0.1.6.md)
   * [v0.1.5](references/version-update/v0.1.5.md)
   * [v0.1.4](references/version-update/v0.1.4.md)
