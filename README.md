@@ -9,7 +9,7 @@ description: ELDependenci 是基於依賴注入的 PaperSpigot 插件開發框�
 {% endhint %}
 
 {% hint style="info" %}
-&#x20;從 v0.1.5 起，本插件將不再支援 1.16.5 或以下的版本，且採用 jdk16 運行。
+&#x20;v2.0 版本現已釋出，現已支援多平台 (包括 spigot 和 bungee)，詳情可到[這裏](https://app.gitbook.com/s/idjWiCsEDWNz2Yg1euWj/)。
 {% endhint %}
 
 ### 前言 <a href="#intro" id="intro"></a>
