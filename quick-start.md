@@ -29,11 +29,11 @@ description: 本頁將教你如何創建你的第一個使用 ELD framework 框�
 {% tabs %}
 {% tab title="使用為 Bukkit 插件 " %}
 ```xml
- <dependency>
-       <groupId>org.eldependenci</groupId>
-       <artifactId>eldependenci-bukkit</artifactId>
-       <version>{最新版本}</version>
-       <scope>provided</scope>
+<dependency>
+    <groupId>org.eldependenci</groupId>
+    <artifactId>eldependenci-bukkit</artifactId>
+    <version>{最新版本}</version>
+    <scope>provided</scope>
 </dependency>
 ```
 {% endtab %}
