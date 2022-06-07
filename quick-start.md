@@ -20,38 +20,32 @@ description: 本頁將教你如何創建你的第一個使用 ELD framework 框�
 {% endhint %}
 
 ```markup
-<repositories>
-    <repository>
-        <id>github</id>
-        <url>https://maven.pkg.github.com/ELDependenci/eldependenci</url>
-    </repository>
-</repositories>
+<repository>
+    <id>github</id>
+    <url>https://maven.pkg.github.com/ELDependenci/eldependenci</url>
+</repository>
 ```
 
 {% tabs %}
 {% tab title="使用為 Bukkit 插件 " %}
 ```xml
-<dependencies>
-    <dependency>
-        <groupId>org.eldependenci</groupId>
-        <artifactId>eldependenci-bukkit</artifactId>
-        <version>{最新版本}</version>
-        <scope>provided</scope>
-    </dependency>
-</dependencies>
+ <dependency>
+       <groupId>org.eldependenci</groupId>
+       <artifactId>eldependenci-bukkit</artifactId>
+       <version>{最新版本}</version>
+       <scope>provided</scope>
+</dependency>
 ```
 {% endtab %}
 
 {% tab title="使用為 Bungee 插件" %}
 ```xml
-<dependencies>
-    <dependency>
-        <groupId>org.eldependenci</groupId>
-        <artifactId>eldependenci-bungee</artifactId>
-        <version>{最新版本}</version>
-        <scope>provided</scope>
-    </dependency>
-</dependencies>
+<dependency>
+    <groupId>org.eldependenci</groupId>
+    <artifactId>eldependenci-bungee</artifactId>
+    <version>{最新版本}</version>
+    <scope>provided</scope>
+</dependency>
 ```
 {% endtab %}
 {% endtabs %}
