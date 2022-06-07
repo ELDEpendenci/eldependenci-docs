@@ -1,5 +1,5 @@
 ---
-description: 本頁將比較原版的編寫方式與掛接ELD後的編寫方式。
+description: 本頁將比較以 bukkit 原版的編寫方式與掛接ELD後的編寫方式。
 ---
 
 # 與原版開發方式的比較
@@ -8,9 +8,9 @@ description: 本頁將比較原版的編寫方式與掛接ELD後的編寫方式�
 
 假設你需要編寫如下的分支指令
 
-* /test say &lt;message&gt; - 發送訊息
-* /test calculate add &lt;one&gt; \[two\] - 計算加法，第二個數值如果不輸入則為 0
-* /test calculate minus &lt;one&gt; \[two\] - 計算減法，第二個數值如果不輸入則為 0
+* /test say \<message> - 發送訊息
+* /test calculate add \<one> \[two] - 計算加法，第二個數值如果不輸入則為 0
+* /test calculate minus \<one> \[two] - 計算減法，第二個數值如果不輸入則為 0
 
 如果你使用原版的編寫方式，那麼其代碼將類似如下:
 
@@ -171,7 +171,7 @@ public class TestCalculateMinusCommand implements CommandNode {
 {% endtab %}
 {% endtabs %}
 
-在上述的代碼當中，你應該也發現了使用本框架編寫指令時的第二個特點，也就是**指令參數解析**。  
+在上述的代碼當中，你應該也發現了使用本框架編寫指令時的第二個特點，也就是**指令參數解析**。\
 指令參數解析可讓你在執行指令時省略將輸入的指令參數轉變成其他實例的功夫，助你更方便的編寫指令。你也可以在本框架中註冊自己的指令參數解析，供給自己甚至他人使用。
 
 在細分指令之後，還要把他們連接起來，形成樹狀關係。實現方式也很簡單:
@@ -180,7 +180,7 @@ public class TestCalculateMinusCommand implements CommandNode {
 public class TesterRegistry implements ComponentsRegistry {
 
     @Override
-    public void registerCommand(CommandRegistry commandRegistry) { // 註冊指令
+    public void registerCommand(CommandRegistry<CommandSender> commandRegistry) { // 註冊指令
         commandRegistry.command(TestCommand.class, c -> {
 
             c.command(TestSayCommand.class);
@@ -197,7 +197,7 @@ public class TesterRegistry implements ComponentsRegistry {
     }
 
     @Override
-    public void registerListeners(ListenerRegistry listenerRegistry) {
+    public void registerListeners(ListenerRegistry<Listener> listenerRegistry) {
           // 註冊監聽器
     }
 
@@ -250,7 +250,7 @@ public class ELDTester extends JavaPlugin {
 }
 ```
 
-看上去並不像太困難和太麻煩，但我們擁有更便利的方式來助你處理文件。  
+看上去並不像太困難和太麻煩，但我們擁有更便利的方式來助你處理文件。\
 本框架採用了[物件映射關聯](https://zh.wikipedia.org/wiki/%E5%AF%B9%E8%B1%A1%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%84)的方式處理文件，將使你在YAML的使用上變得更簡單:
 
 ```java
@@ -290,7 +290,7 @@ public class TestConfig extends Configuration {
 }
 ```
 
-從上述的 class 中，你不難看出這個 class 每一個屬性都代表了 config.yml 中的路徑，且已經定義了該屬性的類型。因此在經過註冊後，你可以直接注入並使用這個實例來直接存取 config.yml 中的所有內容。  
+從上述的 class 中，你不難看出這個 class 每一個屬性都代表了 config.yml 中的路徑，且已經定義了該屬性的類型。因此在經過註冊後，你可以直接注入並使用這個實例來直接存取 config.yml 中的所有內容。\
 例如:
 
 ```java
@@ -313,19 +313,19 @@ public class TestConfigCheckCommand implements CommandNode {
 至於註冊，也是極其簡單:
 
 ```java
-@ELDPlugin(
+@ELDBukkit(
         registry = TesterRegistry.class,
         lifeCycle = TesterLifeCycle.class
 )
 public class ELDTester extends ELDBukkitPlugin {
 
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         serviceCollection.addConfiguration(TestConfig.class); // 這就是註冊了
     }
 
     @Override
-    protected void manageProvider(ManagerProvider provider) {
+    protected void manageProvider(BukkitManagerProvider provider) {
 
     }
 }
@@ -444,22 +444,21 @@ public class TestLanguageCommand implements CommandNode {
 註冊:
 
 ```java
-@ELDPlugin(
+@ELDBukkit(
         registry = TesterRegistry.class,
         lifeCycle = TesterLifeCycle.class
 )
 public class ELDTester extends ELDBukkitPlugin {
 
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         serviceCollection.addMultipleLanguages(TesterMultiLang.class);
         serviceCollection.bindService(I18nService.class, I18nServiceImpl.class);
     }
 
     @Override
-    protected void manageProvider(ManagerProvider provider) {
+    protected void manageProvider(BukkitManagerProvider provider) {
 
     }
 }
 ```
-

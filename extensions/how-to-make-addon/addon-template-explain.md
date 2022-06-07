@@ -4,19 +4,19 @@ description: 教程將以擴充插件範本提供的範例為主。
 
 # 擴充插件範例詳解
 
-在範例中，你可以看到一個module下有兩個module，分別是 API Module 和 Plugin Module，他們分別是 API 模組 及 伺服器插件模組。\
+在範例中，你可以看到一個module下有兩個module，分別是 example-tutorial-api 和 example-tutorial-plugin，他們分別是 API 模組 及 伺服器插件模組。\
 而伺服器插件模組是依賴於 API 模組的，因此伺服器插件建置的時候會包裝 API 模組以創建完整的伺服器插件。
 
 {% hint style="info" %}
 架構大致如下
 
-* API Module - itself
-* Plugin Module - itself + API Module
+* example-tutorial-api - itself
+* example-tutorial-plugin - itself + example-tutorial-api
 {% endhint %}
 
-## API Module 詳解 <a href="#api-module-explain" id="api-module-explain"></a>
+## API 部分詳解 <a href="#api-module-explain" id="api-module-explain"></a>
 
-API Module 內的檔案很少，此取決於你提供多少服務 (API) 予你的使用者。以 API Module 為例，此模組只提供了一個服務給使用者，它就是 `ExampleService`。
+example-tutorial-api 內的檔案很少，此取決於你提供多少服務 (API) 予你的使用者。以 example-tutorial-api 為例，此模組只提供了一個服務給使用者，它就是 `ExampleService`。
 
 ```java
 /**
@@ -57,9 +57,9 @@ public interface MyExampleInstallation {
 
 **關於這個我們將在後頁講解。**
 
-## Plugin Module 詳解 <a href="#plugin-module-explain" id="plugin-module-explain"></a>
+## 插件部分詳解 <a href="#plugin-module-explain" id="plugin-module-explain"></a>
 
-Plugin Module 是實作 API Module 內所有 服務的 模組，因此需要依賴於 API Module。\
+example-tutorial-plugin 是實作 example-tutorial-api 內所有 服務的 模組，因此需要依賴於 example-tutorial-api。\
 它是實現服務運作的核心，因此他也是最後建置成伺服器插件的模組。
 
 {% hint style="info" %}
@@ -109,12 +109,12 @@ public class TutorialLifeCycle implements ELDLifeCycle {
 public class TutorialRegistry implements ComponentsRegistry {
 
     @Override
-    public void registerCommand(CommandRegistry commandRegistry) {
+    public void registerCommand(CommandRegistry<CommandSender> commandRegistry) {
         // no command
     }
 
     @Override
-    public void registerListeners(ListenerRegistry listenerRegistry) {
+    public void registerListeners(ListenerRegistry<Listener> listenerRegistry) {
         // no listeners
     }
 
@@ -126,23 +126,23 @@ public class TutorialRegistry implements ComponentsRegistry {
 {% tab title="插件主類" %}
 {% code title="TutorialPlugin.java" %}
 ```java
-@ELDPlugin(
+@ELDBukkit(
         lifeCycle = TutorialLifeCycle.class,
         registry = TutorialRegistry.class
 )
-// v0.1.1 後，繼承的是 ELDBukkitAddon, 而不是 ELDBukkitPlugin
-public class TutorialPlugin extends ELDBukkitAddon {
+public class TutorialPlugin extends ELDBukkitPlugin {
 
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         // 這裏註冊你的服務
         serviceCollection.bindService(ExampleService.class, ExampleServiceImpl.class);
     }
-
+    
     @Override
-    protected void preAddonInstall(ManagerProvider managerProvider, AddonManager addonManager) {
-       // ...這堆東西將在稍後詳解。
+    protected void manageProvider(BukkitManagerProvider bukkitManagerProvider) {
+        // ...這堆東西將在稍後詳解。
     }
+
 }
 ```
 {% endcode %}
@@ -152,9 +152,9 @@ public class TutorialPlugin extends ELDBukkitAddon {
 {% hint style="success" %}
 當你建置完成後，會有兩個 jar , 分別是 API Module 的 jar 及 Plugin Module jar 。他們的職責如下:&#x20;
 
-API Module 生成的 jar:  給予 其他插件師 進行掛接與使用
+example-tutorial-api 生成的 jar:  給予 其他插件師 進行掛接與使用
 
-Plugin Module 生成的 jar:  給予 服主 放入伺服器運行
+example-tutorial-plugin 生成的 jar:  給予 服主 放入伺服器運行
 {% endhint %}
 
 ## 為什麼要分開模組進行開發？ <a href="#why-separate-template" id="why-separate-template"></a>
@@ -165,5 +165,5 @@ Plugin Module 生成的 jar:  給予 服主 放入伺服器運行
 
 此方式在一定程度上確保了插件的可維護性，以及讓插件師專注於接口使用而非實作本身。
 
-以範例為例，由於 Plugin Module 是 實現 API Module 所有服務 的 模組，因此當你需要修改實作程式碼的時候將不需要更改由其他插件師掛接並使用的 API Module , 提高可維護性。
+以範例為例，由於 example-tutorial-plugin 是 實現 example-tutorial-api 所有服務 的 模組，因此當你需要修改實作程式碼的時候將不需要更改由其他插件師掛接並使用的 example-tutorial-api , 提高可維護性。
 

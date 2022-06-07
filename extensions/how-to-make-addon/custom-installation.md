@@ -27,51 +27,55 @@ public interface MyExampleInstallation {
 其新增方式在 `TutorialPlugin.java` 可見:
 
 ```java
-@ELDPlugin(
+@ELDBukkit(
         lifeCycle = TutorialLifeCycle.class,
         registry = TutorialRegistry.class
 )
-public class TutorialPlugin extends ELDBukkitAddon {
+public class TutorialPlugin extends ELDBukkitPlugin {
 
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         serviceCollection.bindService(ExampleService.class, ExampleServiceImpl.class);
-    }
 
+        // 取出模組安裝器 (需要依賴 eldependenci-addon)
+        AddonInstallation addonManager = serviceCollection.getInstallation(AddonInstallation.class);
 
-    @Override
-    protected void preAddonInstall(ManagerProvider managerProvider, AddonManager addonManager) {
-        // 初始化安裝器
         MyExampleInstallationImpl installation = new MyExampleInstallationImpl();
         // 添加安裝器
         addonManager.customInstallation(MyExampleInstallation.class, installation);
         // 安裝 guice module
         addonManager.installModule(new MyExampleModule(installation));
     }
+
+    @Override
+    protected void manageProvider(BukkitManagerProvider bukkitManagerProvider) {
+
+    }
 }
 ```
 
- 這樣，你的使用者就可在掛接你的插件後使用如下方式安裝:
+&#x20;這樣，你的使用者就可在掛接你的插件後使用如下方式安裝:
 
 ```java
-@ELDPlugin(
+@ELDBukkit(
         lifeCycle = LifeCycle.class,
         registry = Registry.class
 )
 public class JavaMain extends ELDBukkitPlugin {
 
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         // 獲取 該擴充插件 的註冊器
         MyExampleInstallation installation = serviceCollection.getInstallation(MyExampleInstallation.class);
         installation.putSomeValue("hello", "world");
         installation.putSomeValue("good", "work");
     }
 
-    @Override
-    protected void manageProvider(ManagerProvider managerProvider) {
-    }
 
+    @Override
+    protected void manageProvider(BukkitManagerProvider bukkitManagerProvider) {
+
+    }
 }
 ```
 
@@ -122,6 +126,4 @@ public class ExampleServiceImpl implements ExampleService {
     }
 }
 ```
-
-
 

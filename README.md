@@ -1,5 +1,5 @@
 ---
-description: ELDependenci 是基於依賴注入的 PaperSpigot 插件開發框架。
+description: ELDependenci 是基於依賴注入的新世代插件開發框架，支援多平台(包括 spigot 和 bungee)。
 ---
 
 # 歡迎使用 ELDependenci
@@ -9,7 +9,7 @@ description: ELDependenci 是基於依賴注入的 PaperSpigot 插件開發框�
 {% endhint %}
 
 {% hint style="info" %}
-&#x20;v2.0 版本現已釋出，現已支援多平台 (包括 spigot 和 bungee)，詳情可到[這裏](https://app.gitbook.com/s/idjWiCsEDWNz2Yg1euWj/)。
+&#x20;此分支為 v2.0 版本，掛接方式與先前可能會有出入，如果想瀏覽舊版本可點擊[這裏](https://app.gitbook.com/s/-MJQ1cQ1lCNpkF7cMJ\_v-887967055/)。
 {% endhint %}
 
 ### 前言 <a href="#intro" id="intro"></a>
@@ -24,7 +24,7 @@ description: ELDependenci 是基於依賴注入的 PaperSpigot 插件開發框�
 * 在實例中初始化其他實例，造成高耦合問題
 * 大量從構造器中注入單例
 
-此外，除了依賴注入外，此框架也創建了與bukkit原版不同的編寫方式。其優勢在於
+此外，除了依賴注入外，此框架也創建了與原版不同的編寫方式。其優勢在於
 
 * 極為簡單的分支指令創建方式
 * 指令參數預解析
@@ -36,7 +36,7 @@ description: ELDependenci 是基於依賴注入的 PaperSpigot 插件開發框�
 
 ### 本文檔將帶你走進 <a href="#index" id="index"></a>
 
-* 如何使用這個框架創建你的第一個 spigot 插件
+* 如何使用這個框架創建你的第一個 spigot / bungee 插件
 * 如何創建指令，監聽器與設置文件
 * 如何註冊你的第一個實例
 * 如何使用框架編寫你的第一個API (Service)
@@ -48,7 +48,7 @@ description: ELDependenci 是基於依賴注入的 PaperSpigot 插件開發框�
 **在閱讀本文檔之前，請先注意以下事項**
 
 * 本框架以 Guice 作為 DI 的主要依賴庫
-* 本框架以 Paper 1.18.2 插件作為編寫基礎
+* 本框架以 spigot 1.18.2, bungee 1.18 版本作為編寫基礎
 * 本框架採用 jdk18 運行
 {% endhint %}
 
@@ -56,7 +56,8 @@ description: ELDependenci 是基於依賴注入的 PaperSpigot 插件開發框�
 #### 除此之外，你可能需要先了解
 
 * [何謂依賴注入](https://matthung0807.blogspot.com/2019/08/java-dependency-injection.html)
-* [bukkit 插件基本開發知識](https://bukkit.gamepedia.com/Plugin\_Tutorial)
+* [spigot 插件基本開發知識](https://www.spigotmc.org/wiki/spigot-plugin-development/)
+* [bungee 插件基本開發知識](https://www.spigotmc.org/wiki/bungeecord-plugin-development/)
 * [Maven 的使用教學](https://kentyeh.github.io/mavenStartup/)
 {% endhint %}
 

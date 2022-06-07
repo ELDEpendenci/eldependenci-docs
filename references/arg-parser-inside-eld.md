@@ -11,9 +11,11 @@
 * Character
 * Boolean
 * String
-* Player
-* OfflinePlayer
-* Location
+* Player (僅限 Bukkit)
+* OfflinePlayer (僅限 Bukkit)
+* Location (僅限 Bukkit)
+* ProxiedPlayer (僅限 Bungee)
+* ServerInfo (僅限 Bungee)
 * UUID
 
 {% hint style="info" %}
@@ -24,6 +26,5 @@
 
 ### String
 
-* message -&gt; 把所有參數連成訊息串
-* sha-256 -&gt; 把參數轉換為 sha256 hex 文字
-
+* message -> 把所有參數連成訊息串
+* sha-256 -> 把參數轉換為 sha256 hex 文字

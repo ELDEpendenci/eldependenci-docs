@@ -1,12 +1,12 @@
 # 文件池配置
 
-文件池，又名文件組，指一個特定的文件夾內的所有yaml。  
+文件池，又名文件組，指一個特定的文件夾內的所有yaml。\
 該文件夾內的yaml必須符合統一的格式，以確保文件映射能有效運作。
 
 ### 範例
 
-創建文件映射物件，該映射物件必須繼承 `GroupConfiguration`。  
-然後，使用 `@GroupResource` 標註你的文件夾位置。 
+創建文件映射物件，該映射物件必須繼承 `GroupConfiguration`。\
+然後，使用 `@GroupResource` 標註你的文件夾位置。&#x20;
 
 ```java
 @GroupResource(folder = "Books")
@@ -21,7 +21,7 @@ public class Book extends GroupConfiguration {
 }
 ```
 
-`@GroupResource` 有兩個屬性，第一個是必填的 `folder`, 第二個是選填的 `preloads`. 在 `preloads` 中，你可以透過填入 文件名稱 \(可以多個\) 來預先複製 jar 內的文件到插件資料夾內。
+`@GroupResource` 有兩個屬性，第一個是必填的 `folder`, 第二個是選填的 `preloads`. 在 `preloads` 中，你可以透過填入 文件名稱 (可以多個) 來預先複製 jar 內的文件到插件資料夾內。
 
 ```java
 @GroupResource(
@@ -39,7 +39,7 @@ public class Book extends GroupConfiguration {
 }
 ```
 
-Yaml 文件組 \(以書本為範例\)
+Yaml 文件組 (以書本為範例)
 
 {% code title="normal.yml" %}
 ```yaml
@@ -73,23 +73,10 @@ contents:
 註冊文件池
 
 ```java
-@ELDPlugin(
-        registry = TesterRegistry.class,
-        lifeCycle = TesterLifeCycle.class
-)
-public class ELDTester extends ELDBukkitPlugin {
-
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         serviceCollection.addGroupConfiguration(Book.class); //註冊
     }
-
-    @Override
-    protected void manageProvider(ManagerProvider provider) {
-       
-
-    }
-}
 ```
 
 然後，便可以開始使用。
@@ -142,6 +129,10 @@ public class TestBookCheckCommand implements CommandNode {
 `GroupConfig<T>` 採用 DAO pattern，其源碼如下:
 
 ```java
+/**
+ * 文件池。內置快取功能，需要使用 fetch 方法來清除快取
+ * @param <T> 文件池類別
+ */
 public interface GroupConfig<T extends GroupConfiguration> {
 
     /**
@@ -149,6 +140,20 @@ public interface GroupConfig<T extends GroupConfiguration> {
      * @return 所有文件實例
      */
     List<T> findAll();
+
+    /**
+     * 過濾路徑
+     * @param filter 自定義過濾
+     * @return 所有符合特定條件的實例
+     */
+    List<T> findAll(Predicate<Path> filter);
+
+    /**
+     * 獲取指定頁數內的所有文件實例
+     * @param pageRequest 頁面請求
+     * @return 頁面
+     */
+    Page<T> findAll(PageRequest pageRequest);
 
     /**
      * 根據 id 尋找文件實例
@@ -347,4 +352,3 @@ public class TestBookPageCommand implements CommandNode {
     }
 }
 ```
-

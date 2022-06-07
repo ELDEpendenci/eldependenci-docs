@@ -13,25 +13,13 @@ description: 透過辨識標註注入在多重注入實例中的指定實例。
 我們以上一頁的註冊為例:
 
 ```java
-@ELDPlugin(
-        registry = TesterRegistry.class,
-        lifeCycle = TesterLifeCycle.class
-)
-public class ELDTester extends ELDBukkitPlugin {
-
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         serviceCollection.addServices(MyService.class, Map.of(
                 "A", MyServiceA.class,
                 "B", MyServiceB.class
         ));
     }
-
-    @Override
-    protected void manageProvider(ManagerProvider provider) {
-
-    }
-}
 ```
 
 除了透過注入 `Map` 外，我們可以透過 `@Named(key)` 來獲取指定的實例。
@@ -94,7 +82,7 @@ public class MyServiceB implements MyService{
 
 ## 自定義標註
 
-**自定義標註只能用於 Set 註冊。**首先，為每個特定實例創建一個標註\(Annotation\)且該標註需要標註\(Annotate\) `@Qualifier`
+**自定義標註只能用於 Set 註冊。**首先，為每個特定實例創建一個標註(Annotation)且該標註需要標註(Annotate) `@Qualifier`
 
 ```java
 @Retention(RetentionPolicy.RUNTIME)
@@ -163,4 +151,3 @@ public class AnotherService {
     private MyService serviceB; // 注入 ServiceB
 }
 ```
-

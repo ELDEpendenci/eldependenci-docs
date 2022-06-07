@@ -22,22 +22,39 @@ description: 本頁將教你如何創建你的第一個使用 ELD framework 框�
 ```markup
 <repositories>
     <repository>
-        <id>eld</id>
+        <id>github</id>
         <url>https://maven.pkg.github.com/ELDependenci/eldependenci</url>
     </repository>
 </repositories>
 ```
 
-```markup
+{% tabs %}
+{% tab title="使用為 Bukkit 插件 " %}
+```xml
 <dependencies>
     <dependency>
         <groupId>org.eldependenci</groupId>
-        <artifactId>eldependenci-framework</artifactId>
+        <artifactId>eldependenci-bukkit</artifactId>
         <version>{最新版本}</version>
         <scope>provided</scope>
     </dependency>
 </dependencies>
 ```
+{% endtab %}
+
+{% tab title="使用為 Bungee 插件" %}
+```xml
+<dependencies>
+    <dependency>
+        <groupId>org.eldependenci</groupId>
+        <artifactId>eldependenci-bungee</artifactId>
+        <version>{最新版本}</version>
+        <scope>provided</scope>
+    </dependency>
+</dependencies>
+```
+{% endtab %}
+{% endtabs %}
 
 首先你需要創建兩個 classes， 第一個是 Registry，用於註冊監聽器與指令。
 
@@ -46,11 +63,11 @@ public class TesterRegistry implements ComponentsRegistry {
 
 
     @Override
-    public void registerCommand(CommandRegistry commandRegistry) { //註冊指令
+    public void registerCommand(CommandRegistry<CommandSender> commandRegistry) { //註冊指令
     }
 
     @Override
-    public void registerListeners(ListenerRegistry listenerRegistry) { //註冊監聽器
+    public void registerListeners(ListenerRegistry<Listener> listenerRegistry) { //註冊監聽器
     }
 
 }
@@ -58,6 +75,8 @@ public class TesterRegistry implements ComponentsRegistry {
 
 第二個是 LifeCycle, 用於插件的生命週期執行。
 
+{% tabs %}
+{% tab title="掛接 Bukkit 的方式" %}
 ```java
 public class TesterLifeCycle implements ELDLifeCycle {
 
@@ -72,6 +91,31 @@ public class TesterLifeCycle implements ELDLifeCycle {
     }
 }
 ```
+{% endtab %}
+
+{% tab title="掛接 Bungee 的方式" %}
+```java
+public class TesterLifeCycle implements ELDLifeCycle {
+
+    @Override
+    public void onEnable(Plugin plugin) {
+        plugin.getLogger().info("hello world!"); // 輸出 hello world!
+    }
+
+    @Override
+    public void onDisable(Plugin plugin) {
+        plugin.getLogger().info("plugin disabled!"); //輸出 plugin disabled!
+    }
+}
+```
+{% endtab %}
+{% endtabs %}
+
+{% hint style="info" %}
+從上述掛接方式你會發現，LifeCycle 類 和 Registry 類在 bungee 和 bukkit 掛接方式中都是同名的，這是為了確保在編寫不同平台插件時保持統一的編寫習慣。\
+\
+雖然這些類都是同名，但是 package 路徑並不一樣。他們分別放置於 bukkit 包路徑和 bungee 包路徑內，因此仍有助讓你分別該類是屬於哪一個平台，防止混淆。
+{% endhint %}
 
 {% hint style="danger" %}
 LifeCycle 類 和 Registry 類 必須為無參數構造器。
@@ -79,24 +123,49 @@ LifeCycle 類 和 Registry 類 必須為無參數構造器。
 
 開始創建你的 Main Class。
 
+{% tabs %}
+{% tab title="掛接 Bukkit 的方式" %}
 ```java
-@ELDPlugin(
+@ELDBukkit(
         registry = TesterRegistry.class, //指向註冊class
         lifeCycle = TesterLifeCycle.class //指向生命週期class
 )
 public class ELDTester extends ELDBukkitPlugin {
 
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         // 綁定服務, 實例及文件的地方
     }
 
     @Override
-    protected void manageProvider(ManagerProvider provider) {
+    protected void manageProvider(BukkitManagerProvider provider) {
         // 生命週期前的操作
     }
 }
 ```
+{% endtab %}
+
+{% tab title="掛接 Bungee 的方式" %}
+```java
+@ELDBungee(
+        registry = TesterRegistry.class, //指向註冊class
+        lifeCycle = TesterLifeCycle.class //指向生命週期class
+)
+public class ELDTester extends ELDBungeePlugin {
+
+    @Override
+    public void bindServices(ServiceCollection serviceCollection) {
+        // 綁定服務, 實例及文件的地方
+    }
+
+    @Override
+    protected void manageProvider(BungeeManagerProvider provider) {
+        // 生命週期前的操作
+    }
+}
+```
+{% endtab %}
+{% endtabs %}
 
 {% hint style="success" %}
 最後，設置好 plugin.yml, 把 main 指向至 繼承 ELDBukkitPlugin 的 class (ELDTester.java) , 你的第一個ELD插件就完成了。
@@ -165,7 +234,7 @@ public class TesterRegistry implements ComponentsRegistry {
 
 
     @Override
-    public void registerCommand(CommandRegistry commandRegistry) {
+    public void registerCommand(CommandRegistry<CommandSender> commandRegistry) {
         commandRegistry.command(TestCommand.class, c -> {
             
             c.command(TestOneCommand.class);
@@ -176,7 +245,7 @@ public class TesterRegistry implements ComponentsRegistry {
     }
 
     @Override
-    public void registerListeners(ListenerRegistry listenerRegistry) {
+    public void registerListeners(ListenerRegistry<Listener> listenerRegistry) {
     }
 
 
@@ -184,66 +253,27 @@ public class TesterRegistry implements ComponentsRegistry {
 ```
 {% endcode %}
 
-## 事件監聽器 (ELD 版本) <a href="#event-listener" id="event-listener"></a>
+{% hint style="info" %}
+同樣，雖然所有平台都統一使用 `CommandNode` 作為指令接口，但其包路徑對應所屬平台會有所不同。例如在上述 `CommandNode` 例子中， bukkit 的路徑是 `com.ericlam.mc.eld.bukkit.CommandNode`, 而 bungee 的路徑則是 `com.ericlam.mc.eld.bungee.CommandNode 。`
+{% endhint %}
 
-在註冊事件監聽器中，你可以直接註冊原版的事件監聽器，也可以註冊 ELD 版本監聽器 ELDListener。
+## 事件監聽器 <a href="#event-listener" id="event-listener"></a>
 
-```java
-public class TestELDListener implements ELDListener {
-    
-    @Override
-    public void defineNodes(EventListeners eventListeners) {
-        // 擁有 player.join.slient 的玩家沒有加入訊息
-        eventListeners.listen(PlayerJoinEvent.class)
-                .expireAfter(3) // 執行超過三次後逾期
-                .filter(e -> e.getPlayer().hasPermission("player.join.silent"))
-                .handle(e -> e.setJoinMessage(null));
-
-        // 根據玩家是否擁有 player.chat 權限而發送不同訊息
-        eventListeners.listen(AsyncPlayerChatEvent.class)
-                .priority(EventPriority.MONITOR)
-                .filter(e -> !e.isCancelled()) // ignoreCancelled = true
-                .filter(e -> e.getPlayer().hasPermission("player.chat"))
-                .fork() // 建立分支點而不採用 handle
-                .ifTrue(e -> e.getPlayer().sendMessage("you have player.chat permission"))
-                .ifFalse(e -> e.getPlayer().sendMessage("you don't have player.chat permission"));
-        
-        eventListeners.listen(PlayerQuitEvent.class)
-                .filter(e -> e.getPlayer().hasPermission("vip.permission"))
-                .fork()
-                .ifTrue(this::onPlayerQuitIsVIP) // 使用 lambda method
-                .ifFalse(this::onPlayerQuitIsNotVIP);
-    }
-    
-    private void onPlayerQuitIsVIP(PlayerQuitEvent event){
-        event.setQuitMessage("vip left the server: "+event.getPlayer().getName());
-    }
-    
-    
-    private void onPlayerQuitIsNotVIP(PlayerQuitEvent event){
-        event.setQuitMessage("player left the server: "+event.getPlayer().getName());
-    }
-}
-```
-
-最後，在 Registry class 進行註冊。
+在註冊事件監聽器中，你可以直接註冊原版的事件監聽器來使其可以進行依賴注入。
 
 ```java
 public class TesterRegistry implements ComponentsRegistry {
 
 
     @Override
-    public void registerCommand(CommandRegistry commandRegistry) {
+    public void registerCommand(CommandRegistry<CommandSender> commandRegistry) {
     }
 
     @Override
-    public void registerListeners(ListenerRegistry listenerRegistry) {
-        listenerRegistry.ELDListeners(List.of(
-                TestELDListener.class
-        ));
+    public void registerListeners(ListenerRegistry<Listener> listenerRegistry) {
         //註冊原版監聽器
         listenerRegistry.listeners(List.of(
-                TestListeners.class // TestListeners implements org.bukkit.Listener
+                TestListeners.class // TestListeners implements Listener
         ));
     }
 }
@@ -392,23 +422,47 @@ public class TestConfig extends Configuration {
 
 最後在你的 Main class 中，註冊 映射物件。
 
+{% tabs %}
+{% tab title="使用 Bukkit 掛接" %}
 ```java
-@ELDPlugin(
+@ELDBukkit(
         registry = TesterRegistry.class,
         lifeCycle = TesterLifeCycle.class
 )
 public class ELDTester extends ELDBukkitPlugin {
 
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         serviceCollection.addConfiguration(TestConfig.class); // 註冊文件
     }
 
     @Override
-    protected void manageProvider(ManagerProvider provider) {
+    protected void manageProvider(BukkitManagerProvider provider) {
     }
 }
 ```
+{% endtab %}
+
+{% tab title="使用 Bungee 掛接" %}
+```java
+@ELDBungee(
+        registry = TesterRegistry.class,
+        lifeCycle = TesterLifeCycle.class
+)
+public class ELDTester extends ELDBungeePlugin {
+
+    @Override
+    public void bindServices(ServiceCollection serviceCollection) {
+        serviceCollection.addConfiguration(TestConfig.class); // 註冊文件
+    }
+
+    @Override
+    protected void manageProvider(BungeeManagerProvider provider) {
+    }
+}
+```
+{% endtab %}
+{% endtabs %}
 
 {% hint style="success" %}
 註冊後，你可把文件映射物件當作可注入實例使用。
@@ -521,27 +575,54 @@ public class TesterSingleton {
 
 註冊單例
 
+{% tabs %}
+{% tab title="使用 Bukkit 掛接" %}
 ```java
-@ELDPlugin(
+@ELDBukkit(
         registry = TesterRegistry.class,
         lifeCycle = TesterLifeCycle.class
 )
 public class ELDTester extends ELDBukkitPlugin {
 
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         serviceCollection.addSingleton(TesterSingleton.class);
     }
 
     @Override
-    protected void manageProvider(ManagerProvider provider) {
+    protected void manageProvider(BukkitManagerProvider provider) {
         
     }
 }
 ```
+{% endtab %}
+
+{% tab title="使用 Bungee 掛接" %}
+```java
+@ELDBungee(
+        registry = TesterRegistry.class,
+        lifeCycle = TesterLifeCycle.class
+)
+public class ELDTester extends ELDBungeePlugin {
+
+    @Override
+    public void bindServices(ServiceCollection serviceCollection) {
+        serviceCollection.addSingleton(TesterSingleton.class);
+    }
+
+    @Override
+    protected void manageProvider(BungeeManagerProvider provider) {
+        
+    }
+}
+```
+{% endtab %}
+{% endtabs %}
 
 使用: 以生命週期為例
 
+{% tabs %}
+{% tab title="使用 Bukkit 掛接" %}
 ```java
 public class TesterLifeCycle implements ELDLifeCycle {
 
@@ -566,6 +647,35 @@ public class TesterLifeCycle implements ELDLifeCycle {
     }
 }
 ```
+{% endtab %}
+
+{% tab title="使用 Bungee 掛接" %}
+```java
+public class TesterLifeCycle implements ELDLifeCycle {
+
+    @Inject
+    private TesterSingleton singleton;
+
+    @Inject
+    private TestConfig config;
+
+    @Override
+    public void onEnable(Plugin plugin) {
+        singleton.setKey("abc", "fuck");
+        singleton.setKey("xyz", "diu");
+        plugin.getLogger().info(singleton.getString());
+        plugin.getLogger().info(config.toString());
+    }
+
+    @Override
+    public void onDisable(Plugin plugin) {
+        plugin.getLogger().info(singleton.getString());
+        plugin.getLogger().info(config.toString());
+    }
+}
+```
+{% endtab %}
+{% endtabs %}
 
 @Inject 除了使用在 instance field 之外，你也可以使用於 constructor (建構子/構造器) 之中。
 

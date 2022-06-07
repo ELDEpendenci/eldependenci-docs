@@ -4,7 +4,7 @@
 在開始本教程之前，請先細閱[快速開始](../quick-start.md)。
 {% endhint %}
 
-## 指令標註 <a id="annotation"></a>
+## 指令標註 <a href="#annotation" id="annotation"></a>
 
 完整的指令標註參數如下
 
@@ -30,7 +30,7 @@ public @interface Commander {
 playerOnly 並不會自動把 commandSender 轉換成 玩家類別，你仍然需要手動進行形態轉換。
 {% endhint %}
 
-## 分支架構 <a id="subcommands"></a>
+## 分支架構 <a href="#subcommands" id="subcommands"></a>
 
 在本框架，創建分支指令可謂極其簡單。在大型指令系統下，本框架有助你細分各個支點的功能。
 
@@ -39,7 +39,7 @@ public class TesterRegistry implements ComponentsRegistry {
 
     // 本框架允許你無限創建分支指令。
     @Override
-    public void registerCommand(CommandRegistry commandRegistry) {
+    public void registerCommand(CommandRegistry<CommandSender> commandRegistry) {
         commandRegistry.command(TestCommand.class, c -> {
 
             c.command(TestSayCommand.class);
@@ -81,10 +81,9 @@ public class TesterRegistry implements ComponentsRegistry {
     }
 
     @Override
-    public void registerListeners(ListenerRegistry listenerRegistry) {
+    public void registerListeners(ListenerRegistry<Listener> listenerRegistry) {
     }
 
 
 }
 ```
-

@@ -26,39 +26,91 @@ public class LangConfig extends LangConfiguration {
 最後註冊
 
 ```java
-@ELDPlugin(
-        registry = TesterRegistry.class,
-        lifeCycle = TesterLifeCycle.class
-)
-public class ELDTester extends ELDBukkitPlugin {
-
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         serviceCollection.addConfiguration(LangConfig.class);
     }
-
-    @Override
-    protected void manageProvider(ManagerProvider provider) {
-        
-    }
-}
 ```
 
-### 操作訊息文件 <a id="operate-lang"></a>
+### 操作訊息文件 <a href="#operate-lang" id="operate-lang"></a>
 
 要操作訊息文件，只需要呼叫 `getLang()` 的方法，其操作器的方法如下
 
 ```java
+/**
+ * 訊息文件控制器
+ */
 public interface LangController {
-    String get(String var1); // 透過路徑獲取訊息
 
-    String getPure(String var1); //透過路徑獲取無前綴訊息
+    /**
+     * 獲取訊息
+     * @param node 節點
+     * @return 包含前綴的訊息
+     */
+    String get(String node);
 
-    List<String> getList(String var1); //透過路徑獲取訊息列表
+    /**
+     * 獲取訊息，連帶訊息參數 {0} {1} {2}...
+     * @param node 節點
+     * @param args 訊息參數
+     * @return 包含前綴的訊息
+     */
+    String get(String node, Object... args);
 
-    List<String> getPureList(String var1); //透過路徑獲取無前綴訊息列表
 
-    String getPrefix(); //獲取前綴
+    /**
+     * 獲取訊息，連帶訊息參數 %s %d %2.f...
+     * @param node 節點
+     * @param args 訊息參數
+     * @return 包含前綴的訊息
+     */
+    String getF(String node, Object... args);
+
+    /**
+     * 獲取無前綴的訊息
+     * @param node 節點
+     * @return 無前綴訊息
+     */
+    String getPure(String node);
+
+    /**
+     * 獲取無前綴的訊息，連帶訊息參數 {0} {1} {2}...
+     * @param node 節點
+     * @param args 訊息參數
+     * @return 無前綴訊息
+     */
+    String getPure(String node, Object... args);
+
+
+    /**
+     * 獲取無前綴的訊息，連帶訊息參數  %s %d %2.f...
+     * @param node 節點
+     * @param args 訊息參數
+     * @return 無前綴訊息
+     */
+    String getPureF(String node, Object... args);
+
+    /**
+     * 獲取訊息列表
+     * @param node 節點
+     * @return 含前綴訊息列表
+     */
+    List<String> getList(String node);
+
+
+    /**
+     * 獲取無前綴訊息列表
+     * @param node 節點
+     * @return 無前綴訊息列表
+     */
+    List<String> getPureList(String node);
+
+    /**
+     * 獲取前綴
+     * @return 前綴
+     */
+    String getPrefix();
+
 }
 
 ```
@@ -66,4 +118,3 @@ public interface LangController {
 {% hint style="info" %}
 以上所有獲取的訊息都已經自動轉換了顏色代碼。
 {% endhint %}
-

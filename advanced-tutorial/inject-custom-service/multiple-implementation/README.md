@@ -49,25 +49,13 @@ public class MyServiceB implements MyService{
 註冊
 
 ```java
-@ELDPlugin(
-        registry = TesterRegistry.class,
-        lifeCycle = TesterLifeCycle.class
-)
-public class ELDTester extends ELDBukkitPlugin {
-
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         serviceCollection.addServices(MyService.class, Map.of(
                 "A", MyServiceA.class,
                 "B", MyServiceB.class
         ));
     }
-
-    @Override
-    protected void manageProvider(ManagerProvider provider) {
-
-    }
-}
 ```
 
 使用，以指令為例
@@ -130,7 +118,7 @@ public class TestServiceHelloCommand implements CommandNode {
 
 > 當你使用 `/service hello true` 的時候，將使用 ServiceB 來執行，當你輸入 `/service hello false` 或者 `/service hello` 的時候，將使用 ServiceA 來執行
 
-## 使用場景範例 <a id="scenario"></a>
+## 使用場景範例 <a href="#scenario" id="scenario"></a>
 
 以下將列出使用多重實作方式的使用範例。
 
@@ -202,25 +190,13 @@ public class MySQLStorageService implements StorageService{
 註冊如下
 
 ```java
-@ELDPlugin(
-        registry = TesterRegistry.class,
-        lifeCycle = TesterLifeCycle.class
-)
-public class ELDTester extends ELDBukkitPlugin {
-
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         serviceCollection.addServices(StorageService.class, Map.of(
             "mysql", MySQLStorageService.class, 
             "yaml", YamlStorageService.class
         ));
     }
-
-    @Override
-    protected void manageProvider(ManagerProvider provider) {
-       
-    }
-}
 ```
 
 在某個單例的使用方式
@@ -243,7 +219,7 @@ public class StorageManager {
 }
 ```
 
-## 不使用key的狀況下注入多重實作 <a id="multiple-inject-without-key"></a>
+## 不使用key的狀況下注入多重實作 <a href="#multiple-inject-without-key" id="multiple-inject-without-key"></a>
 
 以 LogService 為例
 
@@ -287,28 +263,18 @@ public class LoggerC implements LogService{
 在主類註冊
 
 ```java
-@ELDPlugin(
-        registry = TesterRegistry.class,
-        lifeCycle = TesterLifeCycle.class
-)
-public class ELDTester extends ELDBukkitPlugin {
-
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         serviceCollection.addService(LogService.class, LoggerA.class);
         serviceCollection.addService(LogService.class, LoggerB.class);
         serviceCollection.addService(LogService.class, LoggerC.class);
     }
-
-    @Override
-    protected void manageProvider(ManagerProvider provider) {
-    
-    }
-}
 ```
 
 使用範例如下
 
+{% tabs %}
+{% tab title="在 Bukkit 使用" %}
 ```java
 public class TesterLifeCycle implements ELDLifeCycle {
 
@@ -328,6 +294,28 @@ public class TesterLifeCycle implements ELDLifeCycle {
 }
 
 ```
+{% endtab %}
 
+{% tab title="在 Bungee 使用" %}
+```java
+public class TesterLifeCycle implements ELDLifeCycle {
 
+    @Inject
+    private Set<LogService> logServices;
+
+    @Override
+    public void onEnable(Plugin plugin) {
+        // 輸出全部記錄
+        logServices.forEach(l -> l.log(plugin.getLogger()));
+    }
+
+    @Override
+    public void onDisable(Plugin plugin) {
+
+    }
+}
+
+```
+{% endtab %}
+{% endtabs %}
 

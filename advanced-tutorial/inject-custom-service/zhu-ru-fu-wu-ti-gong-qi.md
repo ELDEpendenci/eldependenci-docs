@@ -4,7 +4,7 @@ description: 本頁將使用 Guice 的 wiki 中的範例作為介紹。
 
 # 注入服務提供器
 
-這種注入方式是透過繼承 Provider&lt;T&gt; 去獲取其實例，其代碼如下:
+這種注入方式是透過繼承 Provider\<T> 去獲取其實例，其代碼如下:
 
 ```java
 public interface Provider<T> {
@@ -34,26 +34,13 @@ public class DatabaseTransactionLogProvider implements Provider<TransactionLog> 
 完成後，到主類註冊。
 
 ```java
-@ELDPlugin(
-        registry = TesterRegistry.class,
-        lifeCycle = TesterLifeCycle.class
-)
-public class ELDTester extends ELDBukkitPlugin {
-
-
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         serviceCollection.bindServiceProvider(TransactionLog.class, DatabaseTransactionLogProvider.class);
     }
-
-    @Override
-    protected void manageProvider(ManagerProvider provider) {
-
-    }
-}
 ```
 
-## 注入 Provider&lt;T&gt;
+## 注入 Provider\<T>
 
 除了直接注入 `TransactionLog` 外, 你也可以直接注入 `Provider<TransactionLog>` 來每次獲取新的實例。
 
@@ -69,6 +56,4 @@ public class LogService {
    }
 }
 ```
-
-
 

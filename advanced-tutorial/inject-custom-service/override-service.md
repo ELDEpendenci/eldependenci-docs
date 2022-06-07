@@ -4,11 +4,11 @@ description: 此為版本 v0.0.6 後的功能。
 
 # 覆蓋原有服務
 
-在某些情況下, 你可能需要讓其他插件師註冊你的服務，以進行掛接操作。  
-版本 v0.0.6 後提供了 覆蓋原有服務類，該服務必須繼承 Overridable。  
+在某些情況下, 你可能需要讓其他插件師註冊你的服務，以進行掛接操作。\
+版本 v0.0.6 後提供了 覆蓋原有服務類，該服務必須繼承 Overridable。\
 我們以類似 Vault 的中介方式作為範例。
 
-### 以下為經濟服務中介插件 <a id="econ-middleware"></a>
+### 以下為經濟服務中介插件 <a href="#econ-middleware" id="econ-middleware"></a>
 
 首先定義經濟服務
 
@@ -27,7 +27,7 @@ public interface EconomyService extends Overridable {
 }
 ```
 
-實作默認的經濟服務 \(這邊的默認將拋出沒有註冊的錯誤\)
+實作默認的經濟服務 (這邊的默認將拋出沒有註冊的錯誤)
 
 ```java
 public class DefaultEconomyService implements EconomyService {
@@ -53,13 +53,13 @@ public class DefaultEconomyService implements EconomyService {
 
 ```java
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         // 註冊經濟服務
         serviceCollection.bindService(EconomyService.class, DefaultEconomyService.class);
     }
 ```
 
-### 經濟服務提供插件 \(經濟插件\) <a id="econ-provider"></a>
+### 經濟服務提供插件 (經濟插件) <a href="#econ-provider" id="econ-provider"></a>
 
 首先掛接經濟服務中介插件，然後實作自己的經濟服務。
 
@@ -96,13 +96,13 @@ public class MyEconomyService implements EconomyService{
 
 ```java
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         // 這邊需要使用覆蓋註冊，否則將被忽略
         serviceCollection.overrideService(EconomyService.class, MyEconomyService.class);
     }
 ```
 
-### 使用經濟服務的插件 \(任何\) <a id="econ-user"></a>
+### 使用經濟服務的插件 (任何) <a href="#econ-user" id="econ-user"></a>
 
 最後由其他插件掛接經濟服務中介插件並注入經濟服務並使用，範例如下
 
@@ -158,16 +158,14 @@ public class ShopManager {
 
 ```java
     @Override
-    protected void bindServices(ServiceCollection serviceCollection) {
+    public void bindServices(ServiceCollection serviceCollection) {
         serviceCollection.addSingleton(ShopManager.class);
     }
 ```
 
 {% hint style="success" %}
-在註冊 ShopManager 的同時，它也將可被其他單例注入使用。 
+在註冊 ShopManager 的同時，它也將可被其他單例注入使用。&#x20;
 {% endhint %}
-
-
 
 
 
