@@ -9,7 +9,7 @@ description: ELDependenci 是基於依賴注入的新世代插件開發框架，
 {% endhint %}
 
 {% hint style="info" %}
-&#x20;此分支為 v2.0 版本，掛接方式與先前可能會有出入，如果想瀏覽舊版本可點擊[這裏](https://app.gitbook.com/s/-MJQ1cQ1lCNpkF7cMJ\_v-887967055/)。
+&#x20;此分支為 v2.0 版本，掛接方式與先前可能會有出入，如果想瀏覽舊版本可點擊[這裏](https://app.gitbook.com/o/mLPcEKyLE3qFZ6o2pCuc/s/-MJQ1cQ1lCNpkF7cMJ\_v-887967055/)。
 {% endhint %}
 
 ### 前言 <a href="#intro" id="intro"></a>
@@ -48,8 +48,8 @@ description: ELDependenci 是基於依賴注入的新世代插件開發框架，
 **在閱讀本文檔之前，請先注意以下事項**
 
 * 本框架以 Guice 作為 DI 的主要依賴庫
-* 本框架以 spigot 1.18.2, bungee 1.18 版本作為編寫基礎
-* 本框架採用 jdk18 運行
+* 本框架以 spigot 1.20.2, bungee 1.19 版本作為編寫基礎
+* 本框架採用 jdk17 運行
 {% endhint %}
 
 {% hint style="info" %}
@@ -61,7 +61,7 @@ description: ELDependenci 是基於依賴注入的新世代插件開發框架，
 * [Maven 的使用教學](https://kentyeh.github.io/mavenStartup/)
 {% endhint %}
 
-****
+
 
 
 
